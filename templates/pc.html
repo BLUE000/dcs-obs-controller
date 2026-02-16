@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCS/OBS Controller - PC設定画面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            overflow-x: auto;  /* ← 追加 */
+            padding-bottom: 10px;
+        }
+
+        .mode-tab {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .mode-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .mode-tab:hover {
+            color: #667eea;
+        }
+
+        .editor-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .panel h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .button-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .button-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-info {
+            flex: 1;
+        }
+
+        .button-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .button-key {
+            font-size: 12px;
+            color: #666;
+            background: #e0e0e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .button-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #5568d3;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .btn-add {
+            background: #28a745;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        .btn-add:hover {
+            background: #218838;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+        }
+
+        .btn-save:hover {
+            transform: scale(1.02);
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .preview-btn {
+            aspect-ratio: 1;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .preview-key {
+            font-size: 10px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        .btn-confirm {
+            background: #667eea;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-confirm:hover {
+            background: #5568d3;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 DCS/OBS Controller - 設定画面</h1>
+            <p>ボタンの配置を編集して、スマホから操作できるようにします</p>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="mode-tabs" id="modeTabs"></div>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; overflow-x: auto; padding-bottom: 10px;">
+            <button onclick="addTab()" class="btn" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; white-space: nowrap; padding: 12px 20px;">
+                ➕ タブを追加
+            </button>
+        </div>
+
+        <div class="editor-section">
+            <div class="panel">
+                <h2>📝 ボタン一覧</h2>
+                <div class="button-list" id="buttonList"></div>
+                <button class="btn btn-add" onclick="openAddModal()">➕ ボタンを追加</button>
+            </div>
+
+            <div class="panel">
+                <h2>👁️ プレビュー</h2>
+                <div class="preview-grid" id="previewGrid"></div>
+            </div>
+        </div>
+
+        <button class="btn btn-save" onclick="saveConfig()">💾 設定を保存</button>
+    </div>
+
+    <!-- モーダル -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle">ボタンを追加</div>
+            <div class="form-group">
+                <label>ボタン名</label>
+                <input type="text" id="inputLabel" placeholder="例: ギア">
+            </div>
+            <div class="form-group">
+                <label>キー</label>
+                <input type="text" id="inputKey" placeholder="例: g または F13">
+            </div>
+            <div class="form-group">
+                <label>ボタンの色</label>
+                <div style="display: flex; gap: 10px;">
+                    <label style="flex: 1;">
+                        <input type="radio" name="color" value="blue" checked>
+                        <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px; border-radius: 5px; display: block; text-align: center;">青</span>
+                    </label>
+                    <label style="flex: 1;">
+                        <input type="radio" name="color" value="green">
+                        <span style="background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); color: white; padding: 8px; border-radius: 5px; display: block; text-align: center;">緑</span>
+                    </label>
+                    <label style="flex: 1;">
+                        <input type="radio" name="color" value="orange">
+                        <span style="background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); color: white; padding: 8px; border-radius: 5px; display: block; text-align: center;">橙</span>
+                    </label>
+                    <label style="flex: 1;">
+                        <input type="radio" name="color" value="red">
+                        <span style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; padding: 8px; border-radius: 5px; display: block; text-align: center;">赤</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal()">キャンセル</button>
+                <button class="btn btn-confirm" onclick="confirmModal()">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let config = null;
+        let currentMode = null;
+        let editingIndex = null;
+
+        // 初期化
+        async function init() {
+            try {
+                const response = await fetch('/api/config');
+                config = await response.json();
+                currentMode = config.current_mode;
+                
+                renderModeTabs();
+                renderButtons();
+                renderPreview();
+            } catch (error) {
+                showStatus('設定の読み込みに失敗しました', 'error');
+            }
+        }
+
+        // モードタブを描画
+        function renderModeTabs() {
+            const tabs = document.getElementById('modeTabs');
+            tabs.innerHTML = '';
+
+            config.modes.forEach((mode, index) => {
+                const tabWrapper = document.createElement('div');
+                tabWrapper.style.cssText = 'display: inline-flex; align-items: center; gap: 8px;';
+
+                const tab = document.createElement('button');
+                tab.className = 'mode-tab';
+                tab.textContent = mode.name;
+                tab.onclick = () => switchMode(mode.id);
+                
+                if (mode.id === currentMode) {
+                    tab.classList.add('active');
+                }
+
+                tabWrapper.appendChild(tab);
+
+                // 編集・削除ボタン（最低1つのタブは残す）
+                if (config.modes.length > 1) {
+                    const editBtn = document.createElement('span');
+                    editBtn.textContent = '✏️';
+                    editBtn.style.cssText = 'cursor: pointer; opacity: 0.7; font-size: 16px; margin-left: 5px;';
+                    editBtn.title = 'タブ名を編集';
+                    editBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        editTab(index);
+                    };
+
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.textContent = '🗑️';
+                    deleteBtn.style.cssText = 'cursor: pointer; opacity: 0.7; font-size: 16px;';
+                    deleteBtn.title = 'タブを削除';
+                    deleteBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        deleteTab(index);
+                    };
+
+                    tabWrapper.appendChild(editBtn);
+                    tabWrapper.appendChild(deleteBtn);
+                }
+                
+                tabs.appendChild(tabWrapper);
+            });
+        }
+
+        // モード切替
+        function switchMode(modeId) {
+            currentMode = modeId;
+            renderModeTabs();
+            renderButtons();
+            renderPreview();
+        }
+
+        // ボタン一覧を描画
+        function renderButtons() {
+            const list = document.getElementById('buttonList');
+            list.innerHTML = '';
+
+            const mode = config.modes.find(m => m.id === currentMode);
+            if (!mode) return;
+
+            mode.buttons.forEach((button, index) => {
+                const item = document.createElement('div');
+                item.className = 'button-item';
+                item.innerHTML = `
+                    <div class="button-info">
+                        <div class="button-label">${button.label}</div>
+                        <span class="button-key">${button.key.toUpperCase()}</span>
+                    </div>
+                    <div class="button-actions">
+                        <button class="btn btn-edit" onclick="editButton(${index})">編集</button>
+                        <button class="btn btn-delete" onclick="deleteButton(${index})">削除</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // プレビューを描画
+        function renderPreview() {
+            const grid = document.getElementById('previewGrid');
+            grid.innerHTML = '';
+
+            const mode = config.modes.find(m => m.id === currentMode);
+            if (!mode) return;
+
+            mode.buttons.forEach(button => {
+                const btn = document.createElement('div');
+                btn.className = 'preview-btn';
+                btn.innerHTML = `
+                    <div>${button.label}</div>
+                    <div class="preview-key">${button.key.toUpperCase()}</div>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        // モーダルを開く（追加）
+        function openAddModal() {
+            editingIndex = null;
+            document.getElementById('modalTitle').textContent = 'ボタンを追加';
+            document.getElementById('inputLabel').value = '';
+            document.getElementById('inputKey').value = '';
+            document.getElementById('modal').classList.add('show');
+        }
+
+        // モーダルを開く（編集）
+        function editButton(index) {
+            editingIndex = index;
+            const mode = config.modes.find(m => m.id === currentMode);
+            const button = mode.buttons[index];
+            
+            document.getElementById('modalTitle').textContent = 'ボタンを編集';
+            document.getElementById('inputLabel').value = button.label;
+            document.getElementById('inputKey').value = button.key;
+            
+            // 色を選択
+            const colorRadio = document.querySelector(`input[name="color"][value="${button.color || 'blue'}"]`);
+            if (colorRadio) colorRadio.checked = true;
+            
+            document.getElementById('modal').classList.add('show');
+        }
+
+        // モーダルを閉じる
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        // モーダル確定
+        function confirmModal() {
+            const label = document.getElementById('inputLabel').value.trim();
+            const key = document.getElementById('inputKey').value.trim();
+            const color = document.querySelector('input[name="color"]:checked').value;
+
+            if (!label || !key) {
+                alert('ボタン名とキーを入力してください');
+                return;
+            }
+
+            const mode = config.modes.find(m => m.id === currentMode);
+
+            if (editingIndex !== null) {
+                // 編集
+                mode.buttons[editingIndex] = { label, key, color };
+            } else {
+                // 追加
+                mode.buttons.push({ label, key, color });
+            }
+
+            renderButtons();
+            renderPreview();
+            closeModal();
+        }
+
+        // ボタン削除
+        function deleteButton(index) {
+            if (!confirm('このボタンを削除しますか？')) return;
+
+            const mode = config.modes.find(m => m.id === currentMode);
+            mode.buttons.splice(index, 1);
+
+            renderButtons();
+            renderPreview();
+        }
+
+        // 設定を保存
+        async function saveConfig() {
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(config)
+                });
+
+                if (response.ok) {
+                    showStatus('設定を保存しました！', 'success');
+                } else {
+                    showStatus('保存に失敗しました', 'error');
+                }
+            } catch (error) {
+                showStatus('通信エラー', 'error');
+            }
+        }
+
+        // ステータスメッセージ表示
+        function showStatus(message, type) {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = 'status-message ' + type;
+
+            setTimeout(() => {
+                status.className = 'status-message';
+            }, 3000);
+        }
+
+        // タブを追加
+        function addTab() {
+            const name = prompt('新しいタブの名前を入力してください:', '新しいモード');
+            if (!name || !name.trim()) return;
+
+            const id = 'mode_' + Date.now();
+            config.modes.push({
+                id: id,
+                name: name.trim(),
+                buttons: []
+            });
+
+            currentMode = id;
+            renderModeTabs();
+            renderButtons();
+            renderPreview();
+        }
+
+        // タブ名を編集
+        function editTab(index) {
+            const mode = config.modes[index];
+            const newName = prompt('タブ名を変更:', mode.name);
+            if (!newName || !newName.trim()) return;
+
+            mode.name = newName.trim();
+            renderModeTabs();
+        }
+
+        // タブを削除
+        function deleteTab(index) {
+            if (!confirm('このタブを削除しますか？\n（ボタンも全て削除されます）')) return;
+
+            const deletedMode = config.modes[index];
+            config.modes.splice(index, 1);
+            
+            // 最低1つのタブは残す
+            if (config.modes.length === 0) {
+                config.modes.push({
+                    id: 'default',
+                    name: 'デフォルト',
+                    buttons: []
+                });
+            }
+
+            // 削除したタブが現在選択中の場合は最初のタブに切り替え
+            if (currentMode === deletedMode.id) {
+                currentMode = config.modes[0].id;
+            }
+
+            renderModeTabs();
+            renderButtons();
+            renderPreview();
+        }
+
+        // 初期化実行
+        init();
+    </script>
+</body>
+</html>

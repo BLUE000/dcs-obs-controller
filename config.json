@@ -1,0 +1,77 @@
+{
+  "current_mode": "dcs",
+  "modes": [
+    {
+      "buttons": [
+        {
+          "key": "g",
+          "color": "green",
+          "name": "ギア"
+        },
+        {
+          "color": "blue",
+          "key": "f",
+          "name": "フラップ"
+        },
+        {
+          "color": "orange",
+          "key": "b",
+          "name": "エアブレーキ"
+        },
+        {
+          "color": "green",
+          "key": "l",
+          "name": "ライト"
+        },
+        {
+          "color": "blue",
+          "key": "h",
+          "name": "フック"
+        },
+        {
+          "color": "red",
+          "key": "p",
+          "name": "パーキングブレーキ"
+        }
+      ],
+      "id": "dcs",
+      "name": "DCS基本操作"
+    },
+    {
+      "buttons": [
+        {
+          "color": "blue",
+          "key": "F13",
+          "name": "シーン1"
+        },
+        {
+          "color": "blue",
+          "key": "F14",
+          "name": "シーン2"
+        },
+        {
+          "color": "blue",
+          "key": "F15",
+          "name": "シーン3"
+        },
+        {
+          "color": "red",
+          "key": "F16",
+          "name": "録画開始/停止"
+        },
+        {
+          "color": "orange",
+          "key": "F17",
+          "name": "配信開始/停止"
+        },
+        {
+          "color": "green",
+          "key": "F18",
+          "name": "マイクミュート"
+        }
+      ],
+      "id": "obs",
+      "name": "OBS制御"
+    }
+  ]
+}

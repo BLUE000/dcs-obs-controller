@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCS/OBS Controller - セットアップ＆使い方マニュアル</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+
+        .toc h2 {
+            font-size: 22px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            padding-left: 10px;
+        }
+
+        h2 {
+            font-size: 28px;
+            color: #667eea;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        h3 {
+            font-size: 22px;
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            font-size: 18px;
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 30px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .box.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .box.warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .box.danger {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .box.info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            color: #666;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 DCS/OBS Controller</h1>
+            <p>セットアップ＆使い方マニュアル</p>
+        </div>
+
+        <div class="toc">
+            <h2>📑 目次</h2>
+            <ul>
+                <li><a href="#about">🎯 このアプリでできること</a></li>
+                <li><a href="#requirements">📋 必要なもの</a></li>
+                <li><a href="#setup">🚀 セットアップ手順</a></li>
+                <li><a href="#initial-config">⚙️ 初期設定</a></li>
+                <li><a href="#usage">🎮 使い方マニュアル</a></li>
+                <li><a href="#obs">🎯 OBSと連携する方法</a></li>
+                <li><a href="#keys">🔧 キーの指定方法</a></li>
+                <li><a href="#troubleshooting">❓ トラブルシューティング</a></li>
+                <li><a href="#tips">💡 便利な使い方</a></li>
+            </ul>
+        </div>
+
+        <section id="about">
+            <h2><span class="emoji">🎯</span>このアプリでできること</h2>
+            <ul>
+                <li><strong>スマホがゲームパッドに変身</strong>：DCS Worldなどのゲームをスマホから操作</li>
+                <li><strong>OBSを遠隔操作</strong>：録画開始/停止、シーン切替をスマホから</li>
+                <li><strong>自由にカスタマイズ</strong>：好きなボタンを好きな配置で作成可能</li>
+            </ul>
+        </section>
+
+        <section id="requirements">
+            <h2><span class="emoji">📋</span>必要なもの</h2>
+            
+            <h3>✅ 準備するもの</h3>
+            <ol>
+                <li><strong>Windows PC</strong>（Windows 10/11）</li>
+                <li><strong>スマホ</strong>（iPhone/Android どちらでもOK）</li>
+                <li><strong>同じWi-Fi</strong>（PCとスマホが同じネットワークに接続）</li>
+            </ol>
+
+            <h3>📥 インストールが必要なもの</h3>
+            <ul>
+                <li><strong>Python 3.10 ～ 3.12</strong>（無料）</li>
+                <li><strong>このアプリ</strong>（ZIPファイル）</li>
+            </ul>
+
+            <div class="box warning">
+                <strong>⚠️ Python バージョンについて</strong>
+                <ul>
+                    <li><strong>推奨</strong>: Python 3.10、3.11、3.12</li>
+                    <li><strong>非推奨</strong>: Python 3.14（最新すぎて一部ライブラリが未対応）</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="setup">
+            <h2><span class="emoji">🚀</span>セットアップ手順</h2>
+
+            <h3><span class="step">ステップ1</span>Pythonをインストール</h3>
+
+            <h4>方法A: 公式サイトからインストール（推奨）</h4>
+            <ol>
+                <li><strong>Pythonの公式サイトにアクセス</strong>
+                    <ul>
+                        <li><a href="https://www.python.org/downloads/" target="_blank">https://www.python.org/downloads/</a></li>
+                    </ul>
+                </li>
+                <li><strong>Python 3.11 または 3.12 をダウンロード</strong>
+                    <ul>
+                        <li>ページを下にスクロールして「Python 3.11.x」または「Python 3.12.x」を選択</li>
+                        <li>黄色いダウンロードボタンをクリック</li>
+                    </ul>
+                </li>
+                <li><strong>インストーラーを実行</strong>
+                    <ul>
+                        <li>ダウンロードした <code>python-3.11.x.exe</code> または <code>python-3.12.x.exe</code> をダブルクリック</li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="box warning">
+                        <strong>⚠️ 重要：チェックボックスを確認</strong>
+                        <ul>
+                            <li>画面下部の「<strong>Add Python to PATH</strong>」に<strong>必ずチェック</strong>を入れる</li>
+                            <li>「Install Now」をクリック</li>
+                        </ul>
+                    </div>
+                </li>
+                <li><strong>インストール完了を待つ</strong>
+                    <ul>
+                        <li>「Setup was successful」と表示されたら完了</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h4>方法B: Microsoft Storeからインストール</h4>
+            <ol>
+                <li><strong>Microsoft Storeを開く</strong>
+                    <ul>
+                        <li>Windowsキーを押して「store」と入力</li>
+                    </ul>
+                </li>
+                <li><strong>「Python 3.11」または「Python 3.12」を検索してインストール</strong></li>
+                <li>
+                    <div class="box warning">
+                        <strong>⚠️ 注意：コマンドが異なります</strong>
+                        <p>この方法の場合、後述のコマンドで <code>python</code> の代わりに <code>python3</code> または <code>py</code> を使用</p>
+                    </div>
+                </li>
+            </ol>
+
+            <h3><span class="step">ステップ2</span>アプリを配置</h3>
+            <ol>
+                <li><strong>ZIPファイルを解凍</strong>
+                    <ul>
+                        <li><code>dcs-obs-controller.zip</code> を右クリック</li>
+                        <li>「すべて展開」を選択</li>
+                        <li>好きな場所に解凍（例：デスクトップ）</li>
+                    </ul>
+                </li>
+                <li><strong>フォルダの中身を確認</strong>
+<pre>dcs-obs-controller/
+├── app.py              ← メインプログラム
+├── config.json         ← 設定ファイル
+├── requirements.txt    ← 必要なライブラリ一覧
+└── templates/          ← 画面デザイン</pre>
+                </li>
+            </ol>
+
+            <h3><span class="step">ステップ3</span>必要なライブラリをインストール</h3>
+            <ol>
+                <li><strong>コマンドプロンプトを開く</strong>
+                    <ul>
+                        <li>キーボードの <code>Windowsキー</code> を押す</li>
+                        <li>「cmd」と入力</li>
+                        <li>「コマンドプロンプト」をクリック</li>
+                    </ul>
+                </li>
+                <li><strong>フォルダに移動</strong>
+                    <p>以下のコマンドを入力（解凍した場所に合わせて変更）</p>
+<pre>cd C:\Users\あなたの名前\Desktop\dcs-obs-controller</pre>
+                    <div class="box info">
+                        <strong>💡 簡単な方法：</strong>
+                        <ul>
+                            <li>エクスプローラーでフォルダを開く</li>
+                            <li>アドレスバーに「cmd」と入力してEnter</li>
+                        </ul>
+                    </div>
+                </li>
+                <li><strong>ライブラリをインストール</strong>
+                    <div class="box danger">
+                        <strong>⚠️ 重要：正しいコマンドを使用</strong>
+                        <p>❌ <code>py install -r requirements.txt</code> ← 間違い</p>
+                        <p>✅ <code>pip install -r requirements.txt</code> ← 正しい</p>
+                    </div>
+                    <p><strong>公式サイト版の場合：</strong></p>
+<pre>pip install -r requirements.txt</pre>
+                    <p><strong>Microsoft Store版の場合：</strong></p>
+<pre>pip3 install -r requirements.txt</pre>
+                    <p>または</p>
+<pre>py -m pip install -r requirements.txt</pre>
+                    <p>または</p>
+<pre>python -m pip install -r requirements.txt</pre>
+                    <p>自動でインストールが始まります（30秒〜1分）</p>
+                </li>
+            </ol>
+
+            <h3><span class="step">ステップ4</span>アプリを起動</h3>
+            <ol>
+                <li><strong>コマンドプロンプトで実行</strong>
+                    <p><strong>公式サイト版の場合：</strong></p>
+<pre>python app.py</pre>
+                    <p><strong>Microsoft Store版の場合：</strong></p>
+<pre>python3 app.py</pre>
+                    <p>または</p>
+<pre>py app.py</pre>
+                </li>
+                <li><strong>起動成功の確認</strong>
+                    <p>以下のような表示が出ればOK：</p>
+<pre>==================================================
+DCS/OBS Controller Server
+==================================================
+PC用設定画面: http://localhost:5000/pc
+スマホ用画面: http://[PCのIP]:5000/
+==================================================
+[INFO] Using 'pynput' library
+[INFO] Key controller initialized
+ * Running on http://192.168.x.x:5000</pre>
+                    <p>この <code>192.168.x.x</code> の数字をメモ</p>
+                </li>
+                <li>
+                    <div class="box warning">
+                        <strong>⚠️ Windowsファイアウォールの警告が出たら</strong>
+                        <p>「アクセスを許可する」をクリック</p>
+                    </div>
+                </li>
+            </ol>
+
+            <h3><span class="step">ステップ5</span>スマホから接続</h3>
+            <ol>
+                <li><strong>スマホのブラウザを開く</strong>
+                    <ul>
+                        <li>Safari（iPhone）またはChrome（Android）</li>
+                    </ul>
+                </li>
+                <li><strong>アドレスバーに入力</strong>
+<pre>http://192.168.x.x:5000</pre>
+                    <p><code>192.168.x.x</code> はステップ4でメモした数字</p>
+                </li>
+                <li><strong>画面が表示されればOK！</strong>
+                    <ul>
+                        <li>ボタンが並んだ画面が表示されます</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+
+        <section id="initial-config">
+            <h2><span class="emoji">⚙️</span>初期設定</h2>
+            <h3>PCで設定画面を開く</h3>
+            <ol>
+                <li><strong>ブラウザで以下にアクセス</strong>
+<pre>http://localhost:5000/pc</pre>
+                </li>
+                <li><strong>設定画面が開きます</strong></li>
+            </ol>
+        </section>
+
+        <section id="usage">
+            <h2><span class="emoji">🎮</span>使い方マニュアル</h2>
+
+            <h3>📝 ボタンの追加方法</h3>
+            <ol>
+                <li><strong>PC設定画面で「➕ ボタンを追加」をクリック</strong></li>
+                <li><strong>情報を入力</strong>
+                    <table>
+                        <tr>
+                            <th>項目</th>
+                            <th>説明</th>
+                            <th>例</th>
+                        </tr>
+                        <tr>
+                            <td><strong>ボタン名</strong></td>
+                            <td>スマホに表示される名前</td>
+                            <td>「ギア」「録画開始」</td>
+                        </tr>
+                        <tr>
+                            <td><strong>キー</strong></td>
+                            <td>押すキー</td>
+                            <td><code>g</code>、<code>F13</code>、<code>ctrl+s</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>色</strong></td>
+                            <td>ボタンの色（青/緑/橙/赤）</td>
+                            <td>青</td>
+                        </tr>
+                    </table>
+                </li>
+                <li><strong>「確定」をクリック</strong></li>
+                <li><strong>「💾 設定を保存」をクリック</strong></li>
+            </ol>
+
+            <h3>🎨 タブ（モード）の使い方</h3>
+            <h4>タブとは？</h4>
+            <ul>
+                <li>ゲームごとに違うボタン配置を保存できる機能</li>
+                <li>例：「DCS用」「OBS用」「配信用」</li>
+            </ul>
+
+            <h4>タブの追加</h4>
+            <ol>
+                <li><strong>「➕ タブを追加」をクリック</strong></li>
+                <li><strong>タブ名を入力</strong>（例：「OBS制御」）</li>
+                <li><strong>ボタンを追加</strong></li>
+            </ol>
+
+            <h4>タブの切り替え</h4>
+            <ul>
+                <li><strong>PC画面</strong>：上部のタブをクリック</li>
+                <li><strong>スマホ画面</strong>：上部のタブをタップ</li>
+            </ul>
+
+            <h4>タブの編集・削除</h4>
+            <ul>
+                <li>タブ名の横の <strong>✏️</strong> で名前変更</li>
+                <li>タブ名の横の <strong>🗑️</strong> で削除</li>
+            </ul>
+        </section>
+
+        <section id="obs">
+            <h2><span class="emoji">🎯</span>OBSと連携する方法</h2>
+
+            <h3>1. OBSのホットキー設定</h3>
+            <ol>
+                <li><strong>OBSを起動</strong></li>
+                <li><strong>「設定」→「ホットキー」を開く</strong></li>
+                <li><strong>各機能にキーを割り当て</strong>
+                    <table>
+                        <tr>
+                            <th>機能</th>
+                            <th>おすすめキー</th>
+                        </tr>
+                        <tr>
+                            <td>録画開始/停止</td>
+                            <td><code>F13</code></td>
+                        </tr>
+                        <tr>
+                            <td>配信開始/停止</td>
+                            <td><code>F14</code></td>
+                        </tr>
+                        <tr>
+                            <td>シーン1</td>
+                            <td><code>F15</code></td>
+                        </tr>
+                        <tr>
+                            <td>シーン2</td>
+                            <td><code>F16</code></td>
+                        </tr>
+                        <tr>
+                            <td>マイクミュート</td>
+                            <td><code>F17</code></td>
+                        </tr>
+                    </table>
+                </li>
+                <li><strong>「適用」→「OK」をクリック</strong></li>
+            </ol>
+
+            <h3>2. アプリにボタンを追加</h3>
+            <ol>
+                <li><strong>PC設定画面を開く</strong></li>
+                <li><strong>「➕ タブを追加」で「OBS制御」タブを作成</strong></li>
+                <li><strong>ボタンを追加</strong>
+                    <p>例：</p>
+                    <ul>
+                        <li>ボタン名：<code>録画開始/停止</code></li>
+                        <li>キー：<code>F13</code></li>
+                        <li>色：赤</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>3. スマホから操作</h3>
+            <ul>
+                <li><strong>OBSがバックグラウンドでも動作します</strong></li>
+                <li>ゲーム中でもスマホから録画開始/停止が可能</li>
+            </ul>
+        </section>
+
+        <section id="keys">
+            <h2><span class="emoji">🔧</span>キーの指定方法</h2>
+
+            <h3>基本のキー</h3>
+<pre>a, b, c ... z        → アルファベット
+0, 1, 2 ... 9        → 数字
+space                → スペース
+enter                → エンター
+esc                  → エスケープ</pre>
+
+            <h3>ファンクションキー</h3>
+<pre>F1, F2 ... F24       → F1〜F24キー</pre>
+
+            <h3>組み合わせキー（pynputのみ）</h3>
+<pre>ctrl+c               → Ctrl + C
+shift+a              → Shift + A
+alt+tab              → Alt + Tab
+ctrl+shift+s         → Ctrl + Shift + S</pre>
+        </section>
+
+        <section id="troubleshooting">
+            <h2><span class="emoji">❓</span>トラブルシューティング</h2>
+
+            <h3>🔴 コマンドエラー</h3>
+
+            <h4>エラー: <code>py install -r requirements.txt</code> が動かない</h4>
+            <div class="box danger">
+                <strong>原因：</strong>コマンドが間違っています
+            </div>
+            <div class="box success">
+                <strong>正しいコマンド：</strong>
+<pre>pip install -r requirements.txt</pre>
+                <p>または</p>
+<pre>python -m pip install -r requirements.txt</pre>
+                <p>または</p>
+<pre>py -m pip install -r requirements.txt</pre>
+            </div>
+
+            <h3>🔴 Python 3.14 でエラーが出る</h3>
+            <div class="box danger">
+                <strong>原因：</strong>Python 3.14 は最新すぎて一部のライブラリが未対応
+            </div>
+            <div class="box success">
+                <strong>解決方法：</strong>
+                <ol>
+                    <li><strong>Python 3.11 または 3.12 をインストール</strong>
+                        <ul>
+                            <li><a href="https://www.python.org/downloads/" target="_blank">https://www.python.org/downloads/</a></li>
+                            <li>ページ下部から「Python 3.11.x」または「Python 3.12.x」を選択</li>
+                        </ul>
+                    </li>
+                    <li><strong>または、pynput のみを使う</strong>
+<pre>pip install Flask flask-socketio flask-cors pynput</pre>
+                    </li>
+                </ol>
+            </div>
+
+            <h3>🔴 ModuleNotFoundError: No module named 'flask_socketio'</h3>
+            <div class="box danger">
+                <strong>原因：</strong>ライブラリがインストールされていない
+            </div>
+            <div class="box success">
+                <strong>解決方法：</strong>
+<pre>pip install flask-socketio</pre>
+                <p>または一括インストール：</p>
+<pre>pip install Flask flask-socketio flask-cors pynput</pre>
+            </div>
+
+            <h3>スマホから接続できない</h3>
+
+            <h4>原因1: PCとスマホが違うWi-Fiに接続している</h4>
+            <div class="box success">
+                <strong>解決：</strong>同じWi-Fiに接続し直す
+            </div>
+
+            <h4>原因2: ファイアウォールがブロックしている</h4>
+            <div class="box success">
+                <strong>解決：</strong>
+                <ol>
+                    <li>Windowsの「設定」→「プライバシーとセキュリティ」→「Windowsセキュリティ」</li>
+                    <li>「ファイアウォールとネットワーク保護」</li>
+                    <li>「ファイアウォールによるアプリケーションの許可」</li>
+                    <li>「Python」を探して、プライベートとパブリックの両方にチェック</li>
+                </ol>
+            </div>
+
+            <h4>原因3: IPアドレスが間違っている</h4>
+            <div class="box success">
+                <strong>解決：</strong>
+                <ul>
+                    <li>コマンドプロンプトで <code>ipconfig</code> を実行</li>
+                    <li>「IPv4アドレス」の数字を確認</li>
+                </ul>
+            </div>
+
+            <h3>ボタンを押しても反応しない</h3>
+
+            <h4>原因1: キーの指定が間違っている</h4>
+            <div class="box success">
+                <strong>解決：</strong>大文字・小文字、スペースを確認
+            </div>
+
+            <h4>原因2: ゲームがキーを認識していない</h4>
+            <div class="box success">
+                <strong>解決：</strong>ゲーム内のキー設定を確認
+            </div>
+
+            <h4>原因3: 管理者権限が必要（Windows）</h4>
+            <div class="box success">
+                <strong>解決：</strong>PowerShellを管理者として実行してから起動
+<pre>python app.py</pre>
+            </div>
+
+            <h3>アプリが起動しない</h3>
+
+            <h4>エラー1: <code>python は、内部コマンドまたは外部コマンド...</code></h4>
+            <div class="box danger">
+                <strong>原因：</strong>Pythonがインストールされていない、またはPATHが通っていない
+            </div>
+            <div class="box success">
+                <strong>解決方法：</strong>
+                <ol>
+                    <li><strong>まず、どのコマンドが使えるか確認</strong>
+<pre>python --version</pre>
+                        <p>ダメなら</p>
+<pre>python3 --version</pre>
+                        <p>ダメなら</p>
+<pre>py --version</pre>
+                    </li>
+                    <li><strong>どれかでバージョンが表示されればOK</strong>
+                        <ul>
+                            <li>例：<code>Python 3.11.0</code></li>
+                            <li>そのコマンドを使ってアプリを起動</li>
+                        </ul>
+                    </li>
+                    <li><strong>すべてダメな場合</strong>
+                        <ul>
+                            <li>Pythonを再インストール</li>
+                            <li>公式サイト版で「Add Python to PATH」に必ずチェック</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="tips">
+            <h2><span class="emoji">💡</span>便利な使い方</h2>
+
+            <h3>自動起動の設定</h3>
+            <ol>
+                <li><strong>バッチファイルを作成</strong>
+                    <ul>
+                        <li>メモ帳を開く</li>
+                        <li>以下を入力：</li>
+                    </ul>
+                    <p><strong>公式サイト版の場合：</strong></p>
+<pre>@echo off
+cd C:\Users\あなたの名前\Desktop\dcs-obs-controller
+python app.py
+pause</pre>
+                    <p><strong>Microsoft Store版の場合：</strong></p>
+<pre>@echo off
+cd C:\Users\あなたの名前\Desktop\dcs-obs-controller
+py app.py
+pause</pre>
+                    <ul>
+                        <li>「start_controller.bat」として保存</li>
+                    </ul>
+                </li>
+                <li><strong>ダブルクリックで起動</strong></li>
+            </ol>
+
+            <h3>スマホのホーム画面に追加</h3>
+            <h4>iPhone:</h4>
+            <ol>
+                <li>Safariでアプリを開く</li>
+                <li>共有ボタン→「ホーム画面に追加」</li>
+            </ol>
+
+            <h4>Android:</h4>
+            <ol>
+                <li>Chromeでアプリを開く</li>
+                <li>メニュー→「ホーム画面に追加」</li>
+            </ol>
+
+            <h3>📌 Pythonコマンド早見表</h3>
+            <table>
+                <tr>
+                    <th>インストール方法</th>
+                    <th>起動コマンド</th>
+                    <th>pipコマンド</th>
+                </tr>
+                <tr>
+                    <td>公式サイト版</td>
+                    <td><code>python app.py</code></td>
+                    <td><code>pip install -r requirements.txt</code></td>
+                </tr>
+                <tr>
+                    <td>Microsoft Store版</td>
+                    <td><code>py app.py</code> または <code>python3 app.py</code></td>
+                    <td><code>py -m pip install -r requirements.txt</code></td>
+                </tr>
+            </table>
+
+            <div class="box info">
+                <strong>どちらか分からない場合：</strong>
+                <ol>
+                    <li><code>python --version</code> を実行</li>
+                    <li>エラーが出たら <code>py --version</code> を試す</li>
+                    <li>表示されたコマンドを使用</li>
+                </ol>
+            </div>
+        </section>
+
+        <section>
+            <h2><span class="emoji">📞</span>よくある質問</h2>
+
+            <h3>Q: 複数のスマホから同時に接続できますか？</h3>
+            <p><strong>A:</strong> はい、できます。</p>
+
+            <h3>Q: PCがスリープ状態でも動作しますか？</h3>
+            <p><strong>A:</strong> いいえ、PCが起動している必要があります。</p>
+
+            <h3>Q: インターネット接続は必要ですか？</h3>
+            <p><strong>A:</strong> いいえ、同じWi-Fi内で動作します（オフラインOK）。</p>
+
+            <h3>Q: DCS World以外でも使えますか？</h3>
+            <p><strong>A:</strong> はい、任意のキーボード操作が可能なので、あらゆるゲームやアプリで使用できます。</p>
+        </section>
+
+        <div class="footer">
+            <h2><span class="emoji">🎉</span>これで完了！</h2>
+            <p>スマホからPCを自由に操作できるようになりました。</p>
+            <p><strong>楽しいゲームライフを！ 🎮✨</strong></p>
+            <p style="margin-top: 30px; font-size: 14px; color: #999;">
+                DCS/OBS Controller - Setup Manual<br>
+                Version 1.1 (修正版)
+            </p>
+        </div>
+    </div>
+</body>
+</html>
